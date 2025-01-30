@@ -1,0 +1,14 @@
+server:
+  port: 8081
+encryption:
+  salt: 1234567890123456
+jwt:
+  secret: 13298iqbal15792alfdkajlfkldnvlakndakljwtj3857pahl13985719835kfjdlakgalk59817592847396evi
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/event_management
+    username: postgres
+    password: iqbalpahlevi
+  jpa:
+    hibernate:
+      ddl-auto: create
