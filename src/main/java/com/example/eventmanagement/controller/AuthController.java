@@ -1,5 +1,6 @@
 package com.example.eventmanagement.controller;
 
+import com.example.eventmanagement.exception.RegisterException;
 import com.example.eventmanagement.model.request.RegisterRequest;
 import com.example.eventmanagement.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestBody RegisterRequest request
-    ) {
+    ) throws RegisterException {
         return ResponseEntity.ok(authService.register(
                 request.getName(),
                 request.getEmail(),

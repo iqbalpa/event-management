@@ -1,6 +1,7 @@
 package com.example.eventmanagement.service.impl;
 
 import com.example.eventmanagement.exception.LoginException;
+import com.example.eventmanagement.exception.RegisterException;
 import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.repository.UserRepository;
 import com.example.eventmanagement.service.AuthService;
@@ -27,17 +28,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String register(String name, String email, String password) {
-        // TODO: try catch
-        // create token first before saving user
-        String encryptedPassword = encryptionService.encrypt(password);
-        UserEntity user = UserEntity.builder()
-                .name(name)
-                .email(email)
-                .password(encryptedPassword)
-                .build();
-        userRepository.save(user);
-        return jwtService.generateToken(user.getName(), user.getEmail());
+    public String register(String name, String email, String password) throws RegisterException {
+        try {
+            String encryptedPassword = encryptionService.encrypt(password);
+            UserEntity user = UserEntity.builder()
+                    .name(name)
+                    .email(email)
+                    .password(encryptedPassword)
+                    .build();
+            String token = jwtService.generateToken(user.getName(), user.getEmail());
+            userRepository.save(user);
+            return token;
+        } catch (Exception e) {
+            throw new RegisterException("Failed to register new user", e);
+        }
     }
 
     @Override
