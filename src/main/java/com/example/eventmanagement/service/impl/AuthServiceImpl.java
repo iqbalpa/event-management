@@ -3,12 +3,15 @@ package com.example.eventmanagement.service.impl;
 import com.example.eventmanagement.exception.LoginException;
 import com.example.eventmanagement.exception.RegisterException;
 import com.example.eventmanagement.model.UserEntity;
+import com.example.eventmanagement.model.request.RegisterRequest;
 import com.example.eventmanagement.repository.UserRepository;
 import com.example.eventmanagement.service.AuthService;
 import com.example.eventmanagement.service.EncryptionService;
 import com.example.eventmanagement.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -28,13 +31,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String register(String name, String email, String password) throws RegisterException {
+    public String register(RegisterRequest request) throws RegisterException {
         try {
-            String encryptedPassword = encryptionService.encrypt(password);
+            String encryptedPassword = encryptionService.encrypt(request.getPassword());
             UserEntity user = UserEntity.builder()
-                    .name(name)
-                    .email(email)
+                    .name(request.getName())
+                    .email(request.getEmail())
                     .password(encryptedPassword)
+                    .age(request.getAge())
+                    .gender(request.getGender())
                     .build();
             String token = jwtService.generateToken(user.getName(), user.getEmail());
             userRepository.save(user);
@@ -47,9 +52,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String login(String email, String password) throws LoginException {
         try {
-            UserEntity user = userRepository.findByEmail(email).get();
-            if (encryptionService.matches(password, user.getPassword())) {
-                return jwtService.generateToken(user.getName(), user.getEmail());
+            Optional<UserEntity> user = userRepository.findByEmail(email);
+            if (user.isPresent() && encryptionService.matches(password, user.get().getPassword())) {
+                return jwtService.generateToken(user.get().getName(), user.get().getEmail());
             }
             throw new LoginException("Invalid email or password");
         } catch (Exception e) {
