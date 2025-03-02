@@ -2,8 +2,11 @@ package com.example.eventmanagement.service;
 
 import com.example.eventmanagement.exception.LoginException;
 import com.example.eventmanagement.exception.RegisterException;
+import com.example.eventmanagement.model.Gender;
+import com.example.eventmanagement.model.request.RegisterRequest;
 
 public interface AuthService {
     String login(String email, String password) throws LoginException;
-    String register(String name, String email, String password) throws RegisterException;
+
+    String register(RegisterRequest request) throws RegisterException;
 }

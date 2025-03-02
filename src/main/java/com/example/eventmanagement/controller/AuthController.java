@@ -23,11 +23,7 @@ public class AuthController {
         @RequestBody RegisterRequest request
     ) {
         try {
-            String token = authService.register(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword()
-            );
+            String token = authService.register(request);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(GeneralResponseEntity.<RegisterResponse>builder()
