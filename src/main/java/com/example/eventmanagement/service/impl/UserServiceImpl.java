@@ -36,4 +36,18 @@ public class UserServiceImpl implements UserService {
         }
         throw new NoSuchElementException("User not found");
     }
+
+    @Override
+    public User updateUser(User user) throws NoSuchElementException {
+        Optional<UserEntity> optionalUser = userRepository.findByEmail(user.getEmail());
+        if (optionalUser.isPresent()) {
+            UserEntity userEntity = optionalUser.get();
+            userEntity.setName(user.getName());
+            userEntity.setAge(user.getAge());
+            userEntity.setGender(user.getGender());
+            userRepository.save(userEntity);
+            return user;
+        }
+        throw new NoSuchElementException("User not found");
+    }
 }

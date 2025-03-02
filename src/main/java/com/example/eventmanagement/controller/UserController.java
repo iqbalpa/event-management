@@ -41,4 +41,29 @@ public class UserController {
                     .build());
         }
     }
+
+    @PutMapping("/profile")
+    public ResponseEntity<GeneralResponseEntity<User>> updateProfile(
+        @RequestBody User user
+    ) {
+        try {
+            User updatedUser = userService.updateUser(user);
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GeneralResponseEntity.<User>builder()
+                    .data(DataEntity.<User>builder()
+                        .message("Successfully update user profile")
+                        .details(updatedUser)
+                        .build())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(GeneralResponseEntity.<User>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
 }
