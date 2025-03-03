@@ -20,6 +20,32 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<GeneralResponseEntity<Event>> getEvent(
+        @PathVariable String id
+    ) {
+        try {
+            Event event = eventService.getEvent(Long.valueOf(id));
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GeneralResponseEntity.<Event>builder()
+                    .message("Event retrieved successfully")
+                    .data(DataEntity.<Event>builder()
+                        .details(event)
+                        .build())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GeneralResponseEntity.<Event>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
+
     @PostMapping
     public ResponseEntity<GeneralResponseEntity<Event>> createEvent(
         @RequestBody EventRequest request

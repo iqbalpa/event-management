@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -33,6 +34,28 @@ public class EventServiceImpl implements EventService {
     ) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public Event getEvent(Long id) {
+        Optional<EventEntity> eventEntity = eventRepository.findById(id);
+        if (eventEntity.isEmpty()) {
+            throw new NoSuchElementException("Event not found");
+        }
+        return Event.builder()
+            .id(eventEntity.get().getId())
+            .title(eventEntity.get().getTitle())
+            .description(eventEntity.get().getDescription())
+            .startDate(eventEntity.get().getStartDate())
+            .endDate(eventEntity.get().getEndDate())
+            .location(eventEntity.get().getLocation())
+            .capacity(eventEntity.get().getCapacity())
+            .price(eventEntity.get().getPrice())
+            .status(eventEntity.get().getStatus())
+            .organizer(UserEntity.builder()
+                .email(eventEntity.get().getOrganizer().getEmail())
+                .build())
+            .build();
     }
 
     @Override
