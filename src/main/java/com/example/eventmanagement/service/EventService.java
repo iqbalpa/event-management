@@ -11,4 +11,8 @@ public interface EventService {
     Event createEvent(EventRequest request);
 
     List<Event> getEvents(Double price, Integer page, Integer size);
+
+    Event updateEvent(Long id, EventRequest request);
+
+    void deleteEvent(Long id);
 }

@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -42,20 +41,7 @@ public class EventServiceImpl implements EventService {
         if (eventEntity.isEmpty()) {
             throw new NoSuchElementException("Event not found");
         }
-        return Event.builder()
-            .id(eventEntity.get().getId())
-            .title(eventEntity.get().getTitle())
-            .description(eventEntity.get().getDescription())
-            .startDate(eventEntity.get().getStartDate())
-            .endDate(eventEntity.get().getEndDate())
-            .location(eventEntity.get().getLocation())
-            .capacity(eventEntity.get().getCapacity())
-            .price(eventEntity.get().getPrice())
-            .status(eventEntity.get().getStatus())
-            .organizer(UserEntity.builder()
-                .email(eventEntity.get().getOrganizer().getEmail())
-                .build())
-            .build();
+        return eventBuilder(eventEntity.get());
     }
 
     @Override
@@ -77,20 +63,7 @@ public class EventServiceImpl implements EventService {
             .organizer(userEntity.get())
             .build();
         eventRepository.save(eventEntity);
-        return Event.builder()
-            .id(eventEntity.getId())
-            .title(eventEntity.getTitle())
-            .description(eventEntity.getDescription())
-            .startDate(eventEntity.getStartDate())
-            .endDate(eventEntity.getEndDate())
-            .location(eventEntity.getLocation())
-            .capacity(eventEntity.getCapacity())
-            .price(eventEntity.getPrice())
-            .status(eventEntity.getStatus())
-            .organizer(UserEntity.builder()
-                .email(eventEntity.getOrganizer().getEmail())
-                .build())
-            .build();
+        return eventBuilder(eventEntity);
     }
 
     @Override
@@ -110,20 +83,57 @@ public class EventServiceImpl implements EventService {
         } else {
             eventEntities = eventRepository.findAllByPriceIsLessThanEqual(price, pageable);
         }
-        return eventEntities.stream().map(eventEntity -> Event.builder()
-                .id(eventEntity.getId())
-                .title(eventEntity.getTitle())
-                .description(eventEntity.getDescription())
-                .startDate(eventEntity.getStartDate())
-                .endDate(eventEntity.getEndDate())
-                .location(eventEntity.getLocation())
-                .capacity(eventEntity.getCapacity())
-                .price(eventEntity.getPrice())
-                .status(eventEntity.getStatus())
-                .organizer(UserEntity.builder()
-                    .email(eventEntity.getOrganizer().getEmail())
-                    .build())
-                .build())
+        return eventEntities.stream()
+            .map(this::eventBuilder)
             .toList();
+    }
+
+    @Override
+    public Event updateEvent(Long id, EventRequest request) {
+        Optional<EventEntity> eventEntity = eventRepository.findById(id);
+        if (eventEntity.isEmpty()) {
+            throw new NoSuchElementException("Event not found");
+        }
+        Optional<UserEntity> userEntity = userRepository.findByEmail(request.getOrganizerEmail());
+        if (userEntity.isEmpty()) {
+            throw new NoSuchElementException("User not found");
+        }
+        eventEntity.get().setTitle(request.getTitle());
+        eventEntity.get().setDescription(request.getDescription());
+        eventEntity.get().setStartDate(request.getStartDate());
+        eventEntity.get().setEndDate(request.getEndDate());
+        eventEntity.get().setLocation(request.getLocation());
+        eventEntity.get().setCapacity(request.getCapacity());
+        eventEntity.get().setPrice(request.getPrice());
+        eventEntity.get().setStatus(request.getStatus());
+        eventEntity.get().setOrganizer(userEntity.get());
+        eventRepository.save(eventEntity.get());
+        return eventBuilder(eventEntity.get());
+    }
+
+    @Override
+    public void deleteEvent(Long id) {
+        Optional<EventEntity> eventEntity = eventRepository.findById(id);
+        if (eventEntity.isEmpty()) {
+            throw new NoSuchElementException("Event not found");
+        }
+        eventRepository.delete(eventEntity.get());
+    }
+
+    private Event eventBuilder(EventEntity eventEntity) {
+        return Event.builder()
+            .id(eventEntity.getId())
+            .title(eventEntity.getTitle())
+            .description(eventEntity.getDescription())
+            .startDate(eventEntity.getStartDate())
+            .endDate(eventEntity.getEndDate())
+            .location(eventEntity.getLocation())
+            .capacity(eventEntity.getCapacity())
+            .price(eventEntity.getPrice())
+            .status(eventEntity.getStatus())
+            .organizer(UserEntity.builder()
+                .email(eventEntity.getOrganizer().getEmail())
+                .build())
+            .build();
     }
 }

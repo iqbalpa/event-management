@@ -99,4 +99,54 @@ public class EventController {
                     .build());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GeneralResponseEntity<Event>> updateEvent(
+        @PathVariable String id,
+        @RequestBody EventRequest request
+    ) {
+        try {
+            Event event = eventService.updateEvent(Long.valueOf(id), request);
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GeneralResponseEntity.<Event>builder()
+                    .message("Event updated successfully")
+                    .data(DataEntity.<Event>builder()
+                        .details(event)
+                        .build())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GeneralResponseEntity.<Event>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GeneralResponseEntity<Void>> deleteEvent(
+        @PathVariable String id
+    ) {
+        try {
+            eventService.deleteEvent(Long.valueOf(id));
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GeneralResponseEntity.<Void>builder()
+                    .message("Event deleted successfully")
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GeneralResponseEntity.<Void>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
 }
