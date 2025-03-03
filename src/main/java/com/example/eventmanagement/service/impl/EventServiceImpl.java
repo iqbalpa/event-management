@@ -8,13 +8,20 @@ import com.example.eventmanagement.repository.EventRepository;
 import com.example.eventmanagement.repository.UserRepository;
 import com.example.eventmanagement.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class EventServiceImpl implements EventService {
+
+    private static final Integer DEFAULT_PAGE = 0;
+    private static final Integer DEFAULT_SIZE = 10;
 
     private EventRepository eventRepository;
     private UserRepository userRepository;
@@ -61,5 +68,39 @@ public class EventServiceImpl implements EventService {
                 .email(eventEntity.getOrganizer().getEmail())
                 .build())
             .build();
+    }
+
+    @Override
+    public List<Event> getEvents(Double price, Integer page, Integer size) {
+        // if no page or size is provided, use default values
+        if (page == null) {
+            page = DEFAULT_PAGE;
+        }
+        if (size == null) {
+            size = DEFAULT_SIZE;
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        // if no price is provided, return all events
+        Page<EventEntity> eventEntities = null;
+        if (price == null) {
+            eventEntities = eventRepository.findAll(pageable);
+        } else {
+            eventEntities = eventRepository.findAllByPriceIsLessThanEqual(price, pageable);
+        }
+        return eventEntities.stream().map(eventEntity -> Event.builder()
+                .id(eventEntity.getId())
+                .title(eventEntity.getTitle())
+                .description(eventEntity.getDescription())
+                .startDate(eventEntity.getStartDate())
+                .endDate(eventEntity.getEndDate())
+                .location(eventEntity.getLocation())
+                .capacity(eventEntity.getCapacity())
+                .price(eventEntity.getPrice())
+                .status(eventEntity.getStatus())
+                .organizer(UserEntity.builder()
+                    .email(eventEntity.getOrganizer().getEmail())
+                    .build())
+                .build())
+            .toList();
     }
 }
