@@ -20,5 +20,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Grant execute permission for Gradle
+        run: chmod +x gradlew
+
       - name: Java Build Runnable JAR
         run: ./gradlew clean build
