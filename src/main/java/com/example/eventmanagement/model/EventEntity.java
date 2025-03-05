@@ -1,6 +1,6 @@
 package com.example.eventmanagement.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -62,7 +64,17 @@ public class EventEntity {
     @JoinColumn(name = "organizer_email", referencedColumnName = "email")
     private UserEntity organizer;
 
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<BookingEntity> bookings = new HashSet<>();
+
     public enum EventStatus {
         DRAFT, PUBLISHED, CANCELLED, COMPLETED
+    }
+
+    public boolean isAvailable() {
+        return this.remainingCapacity > 0
+            && this.status == EventStatus.PUBLISHED
+            && this.startDate.after(new Date());
     }
 }

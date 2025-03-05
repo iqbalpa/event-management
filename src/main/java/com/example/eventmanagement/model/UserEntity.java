@@ -10,6 +10,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -47,5 +49,17 @@ public class UserEntity {
     @Column(name = "gender")
     private Gender gender;
 
+    @Column(name = "role")
+    private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BookingEntity> bookings = new HashSet<>();
+
+    public enum Role {
+        USER, ORGANIZER
+    }
+
+    public boolean hasRole(String role) {
+        return this.role.equals(Role.valueOf(role));
+    }
 }
