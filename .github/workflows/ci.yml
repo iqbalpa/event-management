@@ -1,0 +1,24 @@
+name: Create JAVA Runnable JAR
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - README.md
+      - .gitignore
+  pull_request_target:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Java Build Runnable JAR
+        run: ./gradlew clean build
