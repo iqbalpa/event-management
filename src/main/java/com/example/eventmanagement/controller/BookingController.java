@@ -1,0 +1,50 @@
+package com.example.eventmanagement.controller;
+
+import com.example.eventmanagement.model.BookingEntity;
+import com.example.eventmanagement.model.Event;
+import com.example.eventmanagement.model.request.BookingRequest;
+import com.example.eventmanagement.model.request.EventRequest;
+import com.example.eventmanagement.model.response.DataEntity;
+import com.example.eventmanagement.model.response.ErrorEntity;
+import com.example.eventmanagement.model.response.GeneralResponseEntity;
+import com.example.eventmanagement.service.BookingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("api")
+public class BookingController {
+
+    @Autowired
+    private BookingService bookingService;
+
+    @PostMapping("/events/{id}/booking")
+    public ResponseEntity<GeneralResponseEntity<BookingEntity>> createBooking(
+        @RequestBody BookingRequest request,
+        @PathVariable String id
+    ) {
+        try {
+            request.setEventId(Long.valueOf(id));
+            BookingEntity booking = bookingService.createBooking(request);
+            return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(GeneralResponseEntity.<BookingEntity>builder()
+                    .message("Booking created successfully")
+                    .data(DataEntity.<BookingEntity>builder()
+                        .details(booking)
+                        .build())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GeneralResponseEntity.<BookingEntity>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
+}

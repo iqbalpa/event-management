@@ -48,11 +48,6 @@ public class EventEntity {
     @Column(name = "location", length = 100)
     private String location;
 
-    @Column(name = "capacity")
-    private Integer capacity;
-
-    private Integer remainingCapacity;
-
     @Column(name = "price")
     private Double price;
 
@@ -73,8 +68,7 @@ public class EventEntity {
     }
 
     public boolean isAvailable() {
-        return this.remainingCapacity > 0
-            && this.status == EventStatus.PUBLISHED
+        return this.status == EventStatus.PUBLISHED
             && this.startDate.after(new Date());
     }
 }
