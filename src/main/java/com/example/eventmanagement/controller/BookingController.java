@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api")
 public class BookingController {
@@ -40,6 +42,32 @@ public class BookingController {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(GeneralResponseEntity.<BookingEntity>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
+
+    @GetMapping("/booking")
+    public ResponseEntity<GeneralResponseEntity<List<BookingEntity>>> getBooking(
+        @RequestBody BookingRequest request
+    ) {
+        try {
+            List<BookingEntity> bookings = bookingService.getBookings(request.getUserEmail());
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GeneralResponseEntity.<List<BookingEntity>>builder()
+                    .message("Bookings retrieved successfully")
+                    .data(DataEntity.<List<BookingEntity>>builder()
+                        .details(bookings)
+                        .build())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GeneralResponseEntity.<List<BookingEntity>>builder()
                     .error(ErrorEntity.builder()
                         .code(400)
                         .message(e.getMessage())

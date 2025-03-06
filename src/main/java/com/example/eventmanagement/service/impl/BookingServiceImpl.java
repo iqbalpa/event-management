@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,11 @@ public class BookingServiceImpl implements BookingService {
         this.eventRepository = eventRepository;
         this.ticketRepository = ticketRepository;
         this.bookedTicketRepository = bookedTicketRepository;
+    }
+
+    @Override
+    public List<BookingEntity> getBookings(String email) {
+        return bookingRepository.findAllByUserEmail(email);
     }
 
     @Transactional
