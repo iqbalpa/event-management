@@ -78,4 +78,14 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("Invalid request");
         }
     }
+
+    @Override
+    public BookingEntity updateBookingStatus(Long bookingId, String status) {
+        Optional<BookingEntity> booking = bookingRepository.findById(bookingId);
+        if (booking.isPresent()) {
+            booking.get().setStatus(BookingEntity.BookingStatus.valueOf(status));
+            return bookingRepository.save(booking.get());
+        }
+        throw new IllegalArgumentException("Booking not found");
+    }
 }

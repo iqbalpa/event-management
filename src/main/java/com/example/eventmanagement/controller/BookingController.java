@@ -75,4 +75,31 @@ public class BookingController {
                     .build());
         }
     }
+
+    @PutMapping("/booking/{id}")
+    public ResponseEntity<GeneralResponseEntity<BookingEntity>> updateBookingStatus(
+        @PathVariable String id,
+        @RequestBody BookingRequest request
+    ) {
+        try {
+            BookingEntity booking = bookingService.updateBookingStatus(Long.valueOf(id), request.getBookingStatus());
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GeneralResponseEntity.<BookingEntity>builder()
+                    .message("Booking updated successfully")
+                    .data(DataEntity.<BookingEntity>builder()
+                        .details(booking)
+                        .build())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GeneralResponseEntity.<BookingEntity>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
 }

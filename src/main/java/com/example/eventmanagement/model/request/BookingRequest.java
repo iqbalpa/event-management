@@ -15,4 +15,5 @@ public class BookingRequest {
     private Long eventId;
     private TicketEntity.TicketType ticketType;
     private int quantity;
+    private String bookingStatus;
 }

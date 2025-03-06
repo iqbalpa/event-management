@@ -10,4 +10,6 @@ public interface BookingService {
     List<BookingEntity> getBookings(String email);
 
     BookingEntity createBooking(BookingRequest request);
+
+    BookingEntity updateBookingStatus(Long bookingId, String status);
 }
