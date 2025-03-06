@@ -102,4 +102,28 @@ public class BookingController {
                     .build());
         }
     }
+
+    @DeleteMapping("/booking/{id}")
+    public ResponseEntity<GeneralResponseEntity<Void>> deleteBooking(
+        @PathVariable String id
+    ) {
+        try {
+            bookingService.deleteBooking(Long.valueOf(id));
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(GeneralResponseEntity.<Void>builder()
+                    .message("Booking deleted successfully")
+                    .data(DataEntity.<Void>builder().build())
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GeneralResponseEntity.<Void>builder()
+                    .error(ErrorEntity.builder()
+                        .code(400)
+                        .message(e.getMessage())
+                        .build())
+                    .build());
+        }
+    }
 }

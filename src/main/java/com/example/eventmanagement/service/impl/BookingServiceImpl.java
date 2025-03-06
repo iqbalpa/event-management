@@ -88,4 +88,14 @@ public class BookingServiceImpl implements BookingService {
         }
         throw new IllegalArgumentException("Booking not found");
     }
+
+    @Override
+    public void deleteBooking(Long bookingId) {
+        Optional<BookingEntity> booking = bookingRepository.findById(bookingId);
+        if (booking.isPresent()) {
+            bookingRepository.delete(booking.get());
+        } else {
+            throw new IllegalArgumentException("Booking not found");
+        }
+    }
 }

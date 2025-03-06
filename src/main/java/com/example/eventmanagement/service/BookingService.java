@@ -12,4 +12,6 @@ public interface BookingService {
     BookingEntity createBooking(BookingRequest request);
 
     BookingEntity updateBookingStatus(Long bookingId, String status);
+
+    void deleteBooking(Long bookingId);
 }
