@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -56,12 +57,16 @@ public class BookingServiceImpl implements BookingService {
             BookingEntity booking = BookingEntity.builder()
                 .user(user.get())
                 .event(event.get())
+                .bookedTickets(new HashSet<>())
                 .totalAmount(bookedTicket.getUnitPrice().multiply(BigDecimal.valueOf(bookedTicket.getQuantity())))
                 .build();
-            booking.getBookedTickets().add(bookedTicket);
             bookedTicket.setBooking(booking);
             bookingRepository.save(booking);
             bookedTicketRepository.save(bookedTicket);
+            ticketRepository.decreaseTicketRemainingQuantity(
+                request.getEventId(),
+                request.getTicketType(),
+                request.getQuantity());
             return booking;
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid request");

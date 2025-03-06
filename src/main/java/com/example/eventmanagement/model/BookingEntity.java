@@ -26,6 +26,7 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Builder.Default
     @Column(unique = true, updatable = false)
     private String bookingNumber = UUID.randomUUID().toString();
 
@@ -40,6 +41,7 @@ public class BookingEntity {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookedTicketEntity> bookedTickets = new HashSet<>();
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING;
 
@@ -47,6 +49,7 @@ public class BookingEntity {
 
     private String paymentId;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
