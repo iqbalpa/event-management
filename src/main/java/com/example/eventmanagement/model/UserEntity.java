@@ -1,5 +1,6 @@
 package com.example.eventmanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -52,6 +53,7 @@ public class UserEntity {
     @Column(name = "role")
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookingEntity> bookings = new HashSet<>();
 

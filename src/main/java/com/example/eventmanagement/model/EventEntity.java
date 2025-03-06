@@ -55,6 +55,7 @@ public class EventEntity {
     @Enumerated(EnumType.STRING)
     private EventStatus status = EventStatus.DRAFT;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "organizer_email", referencedColumnName = "email")
     private UserEntity organizer;

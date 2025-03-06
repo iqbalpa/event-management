@@ -1,5 +1,6 @@
 package com.example.eventmanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,14 +31,17 @@ public class BookingEntity {
     @Column(unique = true, updatable = false)
     private String bookingNumber = UUID.randomUUID().toString();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_email", referencedColumnName = "email")
     private UserEntity user;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id")
     private EventEntity event;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookedTicketEntity> bookedTickets = new HashSet<>();
 

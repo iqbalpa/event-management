@@ -1,4 +1,5 @@
 package com.example.eventmanagement.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,10 +21,12 @@ public class BookedTicketEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "booking_id")
     private BookingEntity booking;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private TicketEntity ticket;
