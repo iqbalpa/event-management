@@ -40,8 +40,12 @@ public class AuthServiceImpl implements AuthService {
                     .password(encryptedPassword)
                     .age(request.getAge())
                     .gender(request.getGender())
+                    .role(request.getRole())
                     .build();
-            String token = jwtService.generateToken(user.getName(), user.getEmail());
+            String token = jwtService.generateToken(
+                user.getName(),
+                user.getEmail(),
+                user.getRole().name());
             userRepository.save(user);
             return token;
         } catch (Exception e) {
@@ -54,7 +58,10 @@ public class AuthServiceImpl implements AuthService {
         try {
             Optional<UserEntity> user = userRepository.findByEmail(email);
             if (user.isPresent() && encryptionService.matches(password, user.get().getPassword())) {
-                return jwtService.generateToken(user.get().getName(), user.get().getEmail());
+                return jwtService.generateToken(
+                    user.get().getName(),
+                    user.get().getEmail(),
+                    user.get().getRole().name());
             }
             throw new LoginException("Invalid email or password");
         } catch (Exception e) {

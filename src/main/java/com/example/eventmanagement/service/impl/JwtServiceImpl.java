@@ -20,12 +20,13 @@ public class JwtServiceImpl implements JwtService {
     private static final long EXPIRATION_TIME = 1000L * 60L * 30L; // 30 minutes
 
     @Override
-    public String generateToken(String username, String email) {
+    public String generateToken(String name, String email, String role) {
         Map<String, Object> claims = Map.of(
-                "username", username,
-                "email", email
+                "name", name,
+                "email", email,
+                "role", role
         );
-        return createToken(claims, username);
+        return createToken(claims, email);
     }
 
     @Override
@@ -33,10 +34,10 @@ public class JwtServiceImpl implements JwtService {
         return !isTokenExpired(token);
     }
 
-    private String createToken(Map<String, Object> claims, String username) {
+    private String createToken(Map<String, Object> claims, String email) {
         return Jwts.builder()
                 .claims(claims)
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(generateSigningKey())
