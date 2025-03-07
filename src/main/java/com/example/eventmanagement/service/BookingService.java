@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface BookingService {
 
-    List<BookingEntity> getBookings(String email);
+    List<BookingEntity> getBookings();
 
     BookingEntity createBooking(BookingRequest request);
 
