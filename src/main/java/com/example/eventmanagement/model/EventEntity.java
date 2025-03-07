@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class EventEntity {
 
     @Id
@@ -48,11 +50,6 @@ public class EventEntity {
     @Column(name = "location", length = 100)
     private String location;
 
-    @Column(name = "capacity")
-    private Integer capacity;
-
-    private Integer remainingCapacity;
-
     @Column(name = "price")
     private Double price;
 
@@ -60,6 +57,7 @@ public class EventEntity {
     @Enumerated(EnumType.STRING)
     private EventStatus status = EventStatus.DRAFT;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "organizer_email", referencedColumnName = "email")
     private UserEntity organizer;
@@ -73,8 +71,7 @@ public class EventEntity {
     }
 
     public boolean isAvailable() {
-        return this.remainingCapacity > 0
-            && this.status == EventStatus.PUBLISHED
+        return this.status == EventStatus.PUBLISHED
             && this.startDate.after(new Date());
     }
 }

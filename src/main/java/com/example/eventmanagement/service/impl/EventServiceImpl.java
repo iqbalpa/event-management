@@ -57,7 +57,6 @@ public class EventServiceImpl implements EventService {
             .startDate(request.getStartDate())
             .endDate(request.getEndDate())
             .location(request.getLocation())
-            .capacity(request.getCapacity())
             .price(request.getPrice())
             .status(request.getStatus())
             .organizer(userEntity.get())
@@ -103,7 +102,6 @@ public class EventServiceImpl implements EventService {
         eventEntity.get().setStartDate(request.getStartDate());
         eventEntity.get().setEndDate(request.getEndDate());
         eventEntity.get().setLocation(request.getLocation());
-        eventEntity.get().setCapacity(request.getCapacity());
         eventEntity.get().setPrice(request.getPrice());
         eventEntity.get().setStatus(request.getStatus());
         eventEntity.get().setOrganizer(userEntity.get());
@@ -128,7 +126,6 @@ public class EventServiceImpl implements EventService {
             .startDate(eventEntity.getStartDate())
             .endDate(eventEntity.getEndDate())
             .location(eventEntity.getLocation())
-            .capacity(eventEntity.getCapacity())
             .price(eventEntity.getPrice())
             .status(eventEntity.getStatus())
             .organizer(UserEntity.builder()

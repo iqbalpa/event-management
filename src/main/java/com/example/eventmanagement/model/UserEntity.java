@@ -1,5 +1,6 @@
 package com.example.eventmanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EntityListeners(AuditingEntityListener.class)
 public class UserEntity {
 
     @Id
@@ -52,6 +55,7 @@ public class UserEntity {
     @Column(name = "role")
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookingEntity> bookings = new HashSet<>();
 
