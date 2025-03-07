@@ -18,13 +18,16 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
     private static final long EXPIRATION_TIME = 1000L * 60L * 30L; // 30 minutes
+    private static final String EMAIL_KEY = "email";
+    private static final String NAME_KEY = "name";
+    private static final String ROLE_KEY = "role";
 
     @Override
     public String generateToken(String name, String email, String role) {
         Map<String, Object> claims = Map.of(
-                "name", name,
-                "email", email,
-                "role", role
+                NAME_KEY, name,
+                EMAIL_KEY, email,
+                ROLE_KEY, role
         );
         return createToken(claims, email);
     }
@@ -32,7 +35,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean validateToken(String token, String email) {
         Map<String, Object> claims = getTokenClaims(token);
-        String emailFromToken = (String) claims.get("email");
+        String emailFromToken = (String) claims.get(EMAIL_KEY);
         return !isTokenExpired(token) && email.equals(emailFromToken);
     }
 

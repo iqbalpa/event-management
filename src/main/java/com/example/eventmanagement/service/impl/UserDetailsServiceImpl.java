@@ -9,10 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+    private static final String ROLE_PREFIX = "ROLE_";
+    private static final String USER_NOT_FOUND_ERROR = "User not found";
 
     private UserRepository userRepository;
 
@@ -24,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         UserEntity user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new NoSuchElementException(USER_NOT_FOUND_ERROR));
 
         return org.springframework.security.core.userdetails.User
             .withUsername(user.getEmail())
@@ -38,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private Set<GrantedAuthority> getAuthorities(UserEntity user) {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(ROLE_PREFIX + user.getRole().name());
         return Set.of(authority);
     }
 }

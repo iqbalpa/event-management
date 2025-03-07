@@ -7,7 +7,6 @@ import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.repository.EventRepository;
 import com.example.eventmanagement.repository.TicketRepository;
 import com.example.eventmanagement.repository.UserRepository;
-import com.example.eventmanagement.service.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;

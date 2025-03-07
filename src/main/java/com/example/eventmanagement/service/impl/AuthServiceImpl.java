@@ -6,7 +6,6 @@ import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.model.request.RegisterRequest;
 import com.example.eventmanagement.repository.UserRepository;
 import com.example.eventmanagement.service.AuthService;
-import com.example.eventmanagement.service.EncryptionService;
 import com.example.eventmanagement.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    private EncryptionService encryptionService;
     private UserRepository userRepository;
     private JwtService jwtService;
     private PasswordEncoder passwordEncoder;
@@ -26,13 +24,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     public AuthServiceImpl(
-            EncryptionService encryptionService,
             UserRepository userRepository,
             JwtService jwtService,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager
     ) {
-        this.encryptionService = encryptionService;
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
