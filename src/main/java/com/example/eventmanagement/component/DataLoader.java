@@ -10,6 +10,7 @@ import com.example.eventmanagement.repository.UserRepository;
 import com.example.eventmanagement.service.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -21,19 +22,19 @@ public class DataLoader implements CommandLineRunner {
     private UserRepository userRepository;
     private EventRepository eventRepository;
     private TicketRepository ticketRepository;
-    private EncryptionService encryptionService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public DataLoader(
         UserRepository userRepository,
         EventRepository eventRepository,
         TicketRepository ticketRepository,
-        EncryptionService encryptionService
+        PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.ticketRepository = ticketRepository;
-        this.encryptionService = encryptionService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,14 +43,14 @@ public class DataLoader implements CommandLineRunner {
         userRepository.save(UserEntity.builder()
             .name("admin")
             .email("admin@gmail.com")
-            .password(encryptionService.encrypt("admin"))
+            .password(passwordEncoder.encode("admin"))
             .gender(Gender.MALE)
-            .role(UserEntity.Role.ORGANIZER)
+            .role(UserEntity.Role.ADMIN)
             .build());
         userRepository.save(UserEntity.builder()
             .name("user")
             .email("user@gmail.com")
-            .password(encryptionService.encrypt("user"))
+            .password(passwordEncoder.encode("user"))
             .gender(Gender.MALE)
             .role(UserEntity.Role.USER)
             .build());

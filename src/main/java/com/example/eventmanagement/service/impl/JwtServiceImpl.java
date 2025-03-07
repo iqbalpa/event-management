@@ -30,8 +30,10 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public boolean validateToken(String token) {
-        return !isTokenExpired(token);
+    public boolean validateToken(String token, String email) {
+        Map<String, Object> claims = getTokenClaims(token);
+        String emailFromToken = (String) claims.get("email");
+        return !isTokenExpired(token) && email.equals(emailFromToken);
     }
 
     @Override
