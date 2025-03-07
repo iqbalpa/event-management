@@ -6,27 +6,34 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final String AUTH_HEADER_KEY = "Authorization";
     private static final String AUTH_HEADER_VALUE_PREFIX = "Bearer ";
-    private final HandlerExceptionResolver handlerExceptionResolver;
+    private static final String EMAIL_KEY = "email";
+
     private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
     public JwtAuthFilter(
-        HandlerExceptionResolver handlerExceptionResolver,
-        JwtService jwtService
+        JwtService jwtService,
+        UserDetailsService userDetailsService
     ) {
-        this.handlerExceptionResolver = handlerExceptionResolver;
         this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -36,35 +43,30 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Skip filter for auth endpoints
-        String requestPath = request.getServletPath();
-        if (requestPath.startsWith("/api/auth/")) {
+        final String bearerToken = request.getHeader(AUTH_HEADER_KEY);
+        if (bearerToken == null || !bearerToken.startsWith(AUTH_HEADER_VALUE_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String authToken = request.getHeader(AUTH_HEADER_KEY);
+        String token = bearerToken.substring(AUTH_HEADER_VALUE_PREFIX.length());
+        Map<String, Object> claims = jwtService.getTokenClaims(token);
+        String email = (String) claims.get(EMAIL_KEY);
 
-        if (authToken == null || !authToken.startsWith(AUTH_HEADER_VALUE_PREFIX)) {
-            handlerExceptionResolver.resolveException(
-                request,
-                response,
-                null,
-                new Exception("Invalid token")
-            );
-            return;
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+            if (jwtService.validateToken(token, email)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
         }
 
-        String token = authToken.substring(AUTH_HEADER_VALUE_PREFIX.length());
-        if (jwtService.validateToken(token)) {
-            filterChain.doFilter(request, response);
-        } else {
-            handlerExceptionResolver.resolveException(
-                request,
-                response,
-                null,
-                new Exception("Invalid token")
-            );
-        }
+        filterChain.doFilter(request, response);
     }
 }

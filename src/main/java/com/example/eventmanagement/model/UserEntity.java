@@ -60,7 +60,7 @@ public class UserEntity {
     private Set<BookingEntity> bookings = new HashSet<>();
 
     public enum Role {
-        USER, ORGANIZER
+        USER, ADMIN
     }
 
     public boolean hasRole(String role) {
