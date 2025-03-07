@@ -11,6 +11,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -44,6 +46,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String authToken = request.getHeader(AUTH_HEADER_KEY);
+        Map<String, Object> claims = jwtService.getTokenClaims(authToken);
+        String role = (String) claims.get("role");
+
+        // create, update, and delete event endpoints are only accessible to admin
+        List<String> restrictedMethod = List.of("POST", "PUT", "DELETE");
+        if (requestPath.startsWith("/api/events/")
+            && restrictedMethod.contains(request.getMethod())
+            && !role.equals("ADMIN")) {
+            handlerExceptionResolver.resolveException(
+                request,
+                response,
+                null,
+                new Exception("Unauthorized access")
+            );
+            return;
+        }
 
         if (authToken == null || !authToken.startsWith(AUTH_HEADER_VALUE_PREFIX)) {
             handlerExceptionResolver.resolveException(

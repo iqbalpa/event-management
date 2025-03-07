@@ -34,6 +34,11 @@ public class JwtServiceImpl implements JwtService {
         return !isTokenExpired(token);
     }
 
+    @Override
+    public Map<String, Object> getTokenClaims(String token) {
+        return extractAllClaims(token);
+    }
+
     private String createToken(Map<String, Object> claims, String email) {
         return Jwts.builder()
                 .claims(claims)
