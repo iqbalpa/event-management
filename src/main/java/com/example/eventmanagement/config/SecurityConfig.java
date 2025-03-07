@@ -40,7 +40,7 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/events/**").hasRole(ADMIN_ROLE)
+                .requestMatchers(HttpMethod.POST, "/api/events/").hasRole(ADMIN_ROLE)
                 .requestMatchers(HttpMethod.PUT, "/api/events/**").hasRole(ADMIN_ROLE)
                 .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasRole(ADMIN_ROLE)
                 .anyRequest().authenticated()
