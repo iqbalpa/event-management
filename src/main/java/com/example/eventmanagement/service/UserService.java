@@ -1,11 +1,11 @@
 package com.example.eventmanagement.service;
 
-import com.example.eventmanagement.model.User;
+import com.example.eventmanagement.model.UserEntity;
 
 import java.util.NoSuchElementException;
 
 public interface UserService {
-    User getUserDetail(String email) throws NoSuchElementException;
+    UserEntity getUserDetail(String email) throws NoSuchElementException;
 
-    User updateUser(User user) throws NoSuchElementException;
+    UserEntity updateUser(UserEntity user) throws NoSuchElementException;
 }
