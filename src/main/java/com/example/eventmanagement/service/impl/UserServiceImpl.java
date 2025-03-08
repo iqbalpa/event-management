@@ -1,11 +1,11 @@
 package com.example.eventmanagement.service.impl;
 
-import com.example.eventmanagement.model.User;
 import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.repository.UserRepository;
 import com.example.eventmanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -24,24 +24,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserDetail() throws NoSuchElementException {
-        String email = ((org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+    public UserEntity getUserDetail() throws NoSuchElementException {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<UserEntity> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
-            UserEntity userEntity = optionalUser.get();
-            return User.builder()
-                .name(userEntity.getName())
-                .email(userEntity.getEmail())
-                .age(userEntity.getAge())
-                .gender(userEntity.getGender())
-                .build();
+            return optionalUser.get();
         }
         throw new NoSuchElementException("User not found");
     }
 
     @Override
-    public User updateUser(User user) throws NoSuchElementException {
-        String email = ((org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+    public UserEntity updateUser(UserEntity user) throws NoSuchElementException {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<UserEntity> optionalUser = userRepository.findByEmail(user.getEmail());
         if (optionalUser.isPresent()) {
             if (!email.equals(user.getEmail())) {
@@ -52,7 +46,7 @@ public class UserServiceImpl implements UserService {
             userEntity.setAge(user.getAge());
             userEntity.setGender(user.getGender());
             userRepository.save(userEntity);
-            return user;
+            return userEntity;
         }
         throw new NoSuchElementException("User not found");
     }

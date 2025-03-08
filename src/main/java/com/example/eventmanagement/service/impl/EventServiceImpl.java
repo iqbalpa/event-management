@@ -1,6 +1,5 @@
 package com.example.eventmanagement.service.impl;
 
-import com.example.eventmanagement.model.Event;
 import com.example.eventmanagement.model.EventEntity;
 import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.model.request.EventRequest;
@@ -38,16 +37,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getEvent(Long id) {
+    public EventEntity getEvent(Long id) {
         Optional<EventEntity> eventEntity = eventRepository.findById(id);
         if (eventEntity.isEmpty()) {
             throw new NoSuchElementException("Event not found");
         }
-        return eventBuilder(eventEntity.get());
+        return eventEntity.get();
     }
 
     @Override
-    public Event createEvent(EventRequest request) {
+    public EventEntity createEvent(EventRequest request) {
         String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<UserEntity> userEntity = userRepository.findByEmail(email);
         if (userEntity.isEmpty()) {
@@ -65,11 +64,11 @@ public class EventServiceImpl implements EventService {
             .organizer(userEntity.get())
             .build();
         eventRepository.save(eventEntity);
-        return eventBuilder(eventEntity);
+        return eventEntity;
     }
 
     @Override
-    public List<Event> getEvents(Double price, Integer page, Integer size) {
+    public List<EventEntity> getEvents(Double price, Integer page, Integer size) {
         // if no page or size is provided, use default values
         if (page == null) {
             page = DEFAULT_PAGE;
@@ -85,13 +84,11 @@ public class EventServiceImpl implements EventService {
         } else {
             eventEntities = eventRepository.findAllByPriceIsLessThanEqual(price, pageable);
         }
-        return eventEntities.stream()
-            .map(this::eventBuilder)
-            .toList();
+        return eventEntities.getContent();
     }
 
     @Override
-    public Event updateEvent(Long id, EventRequest request) {
+    public EventEntity updateEvent(Long id, EventRequest request) {
         String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<EventEntity> eventEntity = eventRepository.findById(id);
         if (eventEntity.isEmpty()) {
@@ -113,7 +110,7 @@ public class EventServiceImpl implements EventService {
         eventEntity.get().setStatus(request.getStatus());
         eventEntity.get().setOrganizer(userEntity.get());
         eventRepository.save(eventEntity.get());
-        return eventBuilder(eventEntity.get());
+        return eventEntity.get();
     }
 
     @Override
@@ -127,21 +124,5 @@ public class EventServiceImpl implements EventService {
             throw new IllegalArgumentException("Unauthorized access. You are not the organizer of this event");
         }
         eventRepository.delete(eventEntity.get());
-    }
-
-    private Event eventBuilder(EventEntity eventEntity) {
-        return Event.builder()
-            .id(eventEntity.getId())
-            .title(eventEntity.getTitle())
-            .description(eventEntity.getDescription())
-            .startDate(eventEntity.getStartDate())
-            .endDate(eventEntity.getEndDate())
-            .location(eventEntity.getLocation())
-            .price(eventEntity.getPrice())
-            .status(eventEntity.getStatus())
-            .organizer(UserEntity.builder()
-                .email(eventEntity.getOrganizer().getEmail())
-                .build())
-            .build();
     }
 }

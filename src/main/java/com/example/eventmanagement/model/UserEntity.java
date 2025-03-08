@@ -63,7 +63,8 @@ public class UserEntity {
         USER, ADMIN
     }
 
-    public boolean hasRole(String role) {
-        return this.role.equals(Role.valueOf(role));
+    public enum Gender {
+        MALE,
+        FEMALE
     }
 }

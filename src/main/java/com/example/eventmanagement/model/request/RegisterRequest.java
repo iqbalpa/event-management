@@ -1,6 +1,5 @@
 package com.example.eventmanagement.model.request;
 
-import com.example.eventmanagement.model.Gender;
 import com.example.eventmanagement.model.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +15,6 @@ public class RegisterRequest {
     private String email;
     private String password;
     private int age;
-    private Gender gender;
+    private UserEntity.Gender gender;
     private UserEntity.Role role;
 }

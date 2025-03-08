@@ -1,6 +1,6 @@
 package com.example.eventmanagement.controller;
 
-import com.example.eventmanagement.model.User;
+import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.model.response.DataEntity;
 import com.example.eventmanagement.model.response.ErrorEntity;
 import com.example.eventmanagement.model.response.GeneralResponseEntity;
@@ -18,20 +18,20 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/profile")
-    public ResponseEntity<GeneralResponseEntity<User>> getProfile() {
+    public ResponseEntity<GeneralResponseEntity<UserEntity>> getProfile() {
         try {
-            User user = userService.getUserDetail();
+            UserEntity user = userService.getUserDetail();
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(GeneralResponseEntity.<User>builder()
-                    .data(DataEntity.<User>builder()
+                .body(GeneralResponseEntity.<UserEntity>builder()
+                    .data(DataEntity.<UserEntity>builder()
                         .message("Successfully get user profile")
                         .details(user)
                         .build())
                     .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(GeneralResponseEntity.<User>builder()
+                .body(GeneralResponseEntity.<UserEntity>builder()
                     .error(ErrorEntity.builder()
                         .code(400)
                         .message(e.getMessage())
@@ -41,22 +41,22 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<GeneralResponseEntity<User>> updateProfile(
-        @RequestBody User user
+    public ResponseEntity<GeneralResponseEntity<UserEntity>> updateProfile(
+        @RequestBody UserEntity user
     ) {
         try {
-            User updatedUser = userService.updateUser(user);
+            UserEntity updatedUser = userService.updateUser(user);
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(GeneralResponseEntity.<User>builder()
-                    .data(DataEntity.<User>builder()
+                .body(GeneralResponseEntity.<UserEntity>builder()
+                    .data(DataEntity.<UserEntity>builder()
                         .message("Successfully update user profile")
                         .details(updatedUser)
                         .build())
                     .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(GeneralResponseEntity.<User>builder()
+                .body(GeneralResponseEntity.<UserEntity>builder()
                     .error(ErrorEntity.builder()
                         .code(400)
                         .message(e.getMessage())

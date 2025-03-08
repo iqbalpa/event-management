@@ -1,18 +1,18 @@
 package com.example.eventmanagement.service;
 
-import com.example.eventmanagement.model.Event;
+import com.example.eventmanagement.model.EventEntity;
 import com.example.eventmanagement.model.request.EventRequest;
 
 import java.util.List;
 
 public interface EventService {
-    Event getEvent(Long id);
+    EventEntity getEvent(Long id);
 
-    Event createEvent(EventRequest request);
+    EventEntity createEvent(EventRequest request);
 
-    List<Event> getEvents(Double price, Integer page, Integer size);
+    List<EventEntity> getEvents(Double price, Integer page, Integer size);
 
-    Event updateEvent(Long id, EventRequest request);
+    EventEntity updateEvent(Long id, EventRequest request);
 
     void deleteEvent(Long id);
 }

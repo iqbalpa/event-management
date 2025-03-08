@@ -1,9 +1,7 @@
 package com.example.eventmanagement.controller;
 
 import com.example.eventmanagement.model.BookingEntity;
-import com.example.eventmanagement.model.Event;
 import com.example.eventmanagement.model.request.BookingRequest;
-import com.example.eventmanagement.model.request.EventRequest;
 import com.example.eventmanagement.model.response.DataEntity;
 import com.example.eventmanagement.model.response.ErrorEntity;
 import com.example.eventmanagement.model.response.GeneralResponseEntity;
