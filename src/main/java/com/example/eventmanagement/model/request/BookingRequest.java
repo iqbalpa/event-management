@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingRequest {
-    private String userEmail;
     private Long eventId;
     private TicketEntity.TicketType ticketType;
     private int quantity;
