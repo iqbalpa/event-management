@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +48,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event createEvent(EventRequest request) {
-        Optional<UserEntity> userEntity = userRepository.findByEmail(request.getOrganizerEmail());
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
         if (userEntity.isEmpty()) {
             throw new NoSuchElementException("User not found");
         }
@@ -89,11 +92,15 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event updateEvent(Long id, EventRequest request) {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<EventEntity> eventEntity = eventRepository.findById(id);
         if (eventEntity.isEmpty()) {
             throw new NoSuchElementException("Event not found");
         }
-        Optional<UserEntity> userEntity = userRepository.findByEmail(request.getOrganizerEmail());
+        if (!eventEntity.get().getOrganizer().getEmail().equals(email)) {
+            throw new IllegalArgumentException("Unauthorized access. You are not the organizer of this event");
+        }
+        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
         if (userEntity.isEmpty()) {
             throw new NoSuchElementException("User not found");
         }
@@ -111,9 +118,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void deleteEvent(Long id) {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<EventEntity> eventEntity = eventRepository.findById(id);
         if (eventEntity.isEmpty()) {
             throw new NoSuchElementException("Event not found");
+        }
+        if (!eventEntity.get().getOrganizer().getEmail().equals(email)) {
+            throw new IllegalArgumentException("Unauthorized access. You are not the organizer of this event");
         }
         eventRepository.delete(eventEntity.get());
     }

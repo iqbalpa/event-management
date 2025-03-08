@@ -21,5 +21,4 @@ public class EventRequest {
     private Integer capacity;
     private Double price;
     private EventEntity.EventStatus status;
-    private String organizerEmail;
 }
