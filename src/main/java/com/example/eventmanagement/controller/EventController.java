@@ -1,6 +1,6 @@
 package com.example.eventmanagement.controller;
 
-import com.example.eventmanagement.model.Event;
+import com.example.eventmanagement.model.EventEntity;
 import com.example.eventmanagement.model.request.EventRequest;
 import com.example.eventmanagement.model.response.DataEntity;
 import com.example.eventmanagement.model.response.ErrorEntity;
@@ -21,23 +21,23 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<GeneralResponseEntity<Event>> getEvent(
+    public ResponseEntity<GeneralResponseEntity<EventEntity>> getEvent(
         @PathVariable String id
     ) {
         try {
-            Event event = eventService.getEvent(Long.valueOf(id));
+            EventEntity event = eventService.getEvent(Long.valueOf(id));
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(GeneralResponseEntity.<Event>builder()
+                .body(GeneralResponseEntity.<EventEntity>builder()
                     .message("Event retrieved successfully")
-                    .data(DataEntity.<Event>builder()
+                    .data(DataEntity.<EventEntity>builder()
                         .details(event)
                         .build())
                     .build());
         } catch (Exception e) {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(GeneralResponseEntity.<Event>builder()
+                .body(GeneralResponseEntity.<EventEntity>builder()
                     .error(ErrorEntity.builder()
                         .code(400)
                         .message(e.getMessage())
@@ -47,23 +47,23 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<GeneralResponseEntity<Event>> createEvent(
+    public ResponseEntity<GeneralResponseEntity<EventEntity>> createEvent(
         @RequestBody EventRequest request
     ) {
         try {
-            Event event = eventService.createEvent(request);
+            EventEntity event = eventService.createEvent(request);
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(GeneralResponseEntity.<Event>builder()
+                .body(GeneralResponseEntity.<EventEntity>builder()
                     .message("Event created successfully")
-                    .data(DataEntity.<Event>builder()
+                    .data(DataEntity.<EventEntity>builder()
                         .details(event)
                         .build())
                     .build());
         } catch (Exception e) {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(GeneralResponseEntity.<Event>builder()
+                .body(GeneralResponseEntity.<EventEntity>builder()
                     .error(ErrorEntity.builder()
                         .code(400)
                         .message(e.getMessage())
@@ -73,25 +73,25 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<GeneralResponseEntity<List<Event>>> getEvents(
+    public ResponseEntity<GeneralResponseEntity<List<EventEntity>>> getEvents(
         @RequestParam(required = false) Double price,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer size
     ) {
         try {
-            List<Event> events = eventService.getEvents(price, page, size);
+            List<EventEntity> events = eventService.getEvents(price, page, size);
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(GeneralResponseEntity.<List<Event>>builder()
+                .body(GeneralResponseEntity.<List<EventEntity>>builder()
                     .message("Events retrieved successfully")
-                    .data(DataEntity.<List<Event>>builder()
+                    .data(DataEntity.<List<EventEntity>>builder()
                         .details(events)
                         .build())
                     .build());
         } catch (Exception e) {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(GeneralResponseEntity.<List<Event>>builder()
+                .body(GeneralResponseEntity.<List<EventEntity>>builder()
                     .error(ErrorEntity.builder()
                         .code(400)
                         .message(e.getMessage())
@@ -101,24 +101,24 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GeneralResponseEntity<Event>> updateEvent(
+    public ResponseEntity<GeneralResponseEntity<EventEntity>> updateEvent(
         @PathVariable String id,
         @RequestBody EventRequest request
     ) {
         try {
-            Event event = eventService.updateEvent(Long.valueOf(id), request);
+            EventEntity event = eventService.updateEvent(Long.valueOf(id), request);
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(GeneralResponseEntity.<Event>builder()
+                .body(GeneralResponseEntity.<EventEntity>builder()
                     .message("Event updated successfully")
-                    .data(DataEntity.<Event>builder()
+                    .data(DataEntity.<EventEntity>builder()
                         .details(event)
                         .build())
                     .build());
         } catch (Exception e) {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(GeneralResponseEntity.<Event>builder()
+                .body(GeneralResponseEntity.<EventEntity>builder()
                     .error(ErrorEntity.builder()
                         .code(400)
                         .message(e.getMessage())
