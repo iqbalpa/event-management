@@ -18,11 +18,9 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/profile")
-    public ResponseEntity<GeneralResponseEntity<User>> getProfile(
-        @RequestBody String email
-    ) {
+    public ResponseEntity<GeneralResponseEntity<User>> getProfile() {
         try {
-            User user = userService.getUserDetail(email);
+            User user = userService.getUserDetail();
             return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(GeneralResponseEntity.<User>builder()
