@@ -2,7 +2,6 @@ package com.example.eventmanagement.service;
 
 import com.example.eventmanagement.exception.LoginException;
 import com.example.eventmanagement.exception.RegisterException;
-import com.example.eventmanagement.model.Gender;
 import com.example.eventmanagement.model.request.RegisterRequest;
 
 public interface AuthService {
