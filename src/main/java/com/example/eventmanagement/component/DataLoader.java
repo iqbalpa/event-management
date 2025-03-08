@@ -47,6 +47,13 @@ public class DataLoader implements CommandLineRunner {
             .role(UserEntity.Role.ADMIN)
             .build());
         userRepository.save(UserEntity.builder()
+            .name("admin2")
+            .email("admin2@gmail.com")
+            .password(passwordEncoder.encode("admin2"))
+            .gender(Gender.MALE)
+            .role(UserEntity.Role.ADMIN)
+            .build());
+        userRepository.save(UserEntity.builder()
             .name("user")
             .email("user@gmail.com")
             .password(passwordEncoder.encode("user"))
@@ -60,7 +67,7 @@ public class DataLoader implements CommandLineRunner {
             .location("Jakarta")
             .startDate(new Date("2025/12/12"))
             .status(EventEntity.EventStatus.PUBLISHED)
-            .organizer(userRepository.findByEmail("admin@gmail.com").get())
+            .organizer(userRepository.findByEmail("admin2@gmail.com").get())
             .build());
         // create tickets
         ticketRepository.save(TicketEntity.builder()
