@@ -51,11 +51,9 @@ public class BookingController {
     }
 
     @GetMapping("/booking")
-    public ResponseEntity<GeneralResponseEntity<List<BookingEntity>>> getBooking(
-        @RequestBody BookingRequest request
-    ) {
+    public ResponseEntity<GeneralResponseEntity<List<BookingEntity>>> getBooking() {
         try {
-            List<BookingEntity> bookings = bookingService.getBookings(request.getUserEmail());
+            List<BookingEntity> bookings = bookingService.getBookings();
             return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(GeneralResponseEntity.<List<BookingEntity>>builder()
