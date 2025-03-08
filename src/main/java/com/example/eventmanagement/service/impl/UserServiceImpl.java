@@ -4,6 +4,8 @@ import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.repository.UserRepository;
 import com.example.eventmanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -22,7 +24,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getUserDetail(String email) throws NoSuchElementException {
+    public UserEntity getUserDetail() throws NoSuchElementException {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<UserEntity> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
@@ -32,8 +35,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity updateUser(UserEntity user) throws NoSuchElementException {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<UserEntity> optionalUser = userRepository.findByEmail(user.getEmail());
         if (optionalUser.isPresent()) {
+            if (!email.equals(user.getEmail())) {
+                throw new NoSuchElementException("User not found");
+            }
             UserEntity userEntity = optionalUser.get();
             userEntity.setName(user.getName());
             userEntity.setAge(user.getAge());
