@@ -1,7 +1,6 @@
 package com.example.eventmanagement.component;
 
 import com.example.eventmanagement.model.EventEntity;
-import com.example.eventmanagement.model.Gender;
 import com.example.eventmanagement.model.TicketEntity;
 import com.example.eventmanagement.model.UserEntity;
 import com.example.eventmanagement.repository.EventRepository;
@@ -43,21 +42,21 @@ public class DataLoader implements CommandLineRunner {
             .name("admin")
             .email("admin@gmail.com")
             .password(passwordEncoder.encode("admin"))
-            .gender(Gender.MALE)
+            .gender(UserEntity.Gender.FEMALE.MALE)
             .role(UserEntity.Role.ADMIN)
             .build());
         userRepository.save(UserEntity.builder()
             .name("admin2")
             .email("admin2@gmail.com")
             .password(passwordEncoder.encode("admin2"))
-            .gender(Gender.MALE)
+            .gender(UserEntity.Gender.MALE.MALE)
             .role(UserEntity.Role.ADMIN)
             .build());
         userRepository.save(UserEntity.builder()
             .name("user")
             .email("user@gmail.com")
             .password(passwordEncoder.encode("user"))
-            .gender(Gender.MALE)
+            .gender(UserEntity.Gender.MALE.MALE)
             .role(UserEntity.Role.USER)
             .build());
         // create events
