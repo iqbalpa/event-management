@@ -48,8 +48,9 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     @Override
     public BookingEntity createBooking(BookingRequest request) {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         try {
-            Optional<UserEntity> user = userRepository.findByEmail(request.getUserEmail());
+            Optional<UserEntity> user = userRepository.findByEmail(email);
             Optional<EventEntity> event = eventRepository.findById(request.getEventId());
             Optional<TicketEntity> ticket = ticketRepository.findByEventIdAndType(request.getEventId(), request.getTicketType());
 
