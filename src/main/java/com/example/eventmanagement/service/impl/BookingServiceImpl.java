@@ -84,8 +84,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingEntity updateBookingStatus(Long bookingId, String status) {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Optional<BookingEntity> booking = bookingRepository.findById(bookingId);
         if (booking.isPresent()) {
+            if (!booking.get().getUser().getEmail().equals(email)) {
+                throw new IllegalArgumentException("Unauthorized access");
+            }
             booking.get().setStatus(BookingEntity.BookingStatus.valueOf(status));
             return bookingRepository.save(booking.get());
         }
